@@ -86,16 +86,16 @@ app.put('/heroes/:slug/powers',validateHero , function (req, res) {
 });
 
 // route qui permet de suprimer un hero spécifique
-app.delete("/heroes/:slug", checkSameHerosAndDelete, validateHero, function (req, res) {
+app.delete("/heroes/:slug", checkSameHerosAndDelete, function (req, res) {
     const {slug} = req.params
     // methode findIndex pour trouver l'index de mon personnage et le suprimer grace a l'index
     const index = heros.findIndex( hero => hero.slug === slug )
     heros.splice(index,1)
-    res.status(200).send('nom de héros effacé correctement')
+    res.status(200).json({message:'nom de héros effacé correctement'})
 })
 
 // route qui permet de suprimer un pouvoir d'un hero spécifique
-app.delete("/heroes/:slug/power/:powers", checkSameHerosAndDelete, validateHero, function (req, res) {
+app.delete("/heroes/:slug/power/:powers", checkSameHerosAndDelete, function (req, res) {
     const {slug, powers} = req.params
     const index = heros.findIndex( hero => hero.slug === slug )
     // console.log("index =>" ,index);
@@ -114,10 +114,11 @@ app.delete("/heroes/:slug/power/:powers", checkSameHerosAndDelete, validateHero,
 // route qui permet de remplacer un hero existant par un autre
 app.put('/heroes/:slug',validateHero, function (req, res) {
     const {slug} = req.params
-    let selectedHero = heros.find( hero => hero.slug === slug.toLowerCase())
-        
-        selectedHero = {...selectedHero, ...req.body}
-        res.json(selectedHero)
+    let selectedHeros = heros.findIndex(hero => hero.slug === slug.toLowerCase())
+    
+        heros[selectedHeros] = {...heros[selectedHeros], ...req.body}
+
+        res.json(heros[selectedHeros])
 });
 
 module.exports = app
